@@ -5,8 +5,8 @@ const axios = require("axios");
 const cors = require("cors");
 const { v4 } = require("uuid");
 const data = require("./db.json");
+const fs = require("fs");
 
-console.log(data);
 const track_url = "https://rest.fra-02.braze.eu/users/track";
 const alias_url = "https://rest.fra-02.braze.eu/users/alias/new";
 const identify_url = "https://rest.fra-02.braze.eu/users/identify";
@@ -85,7 +85,13 @@ const searchInArr = (key) => {
 };
 
 const addToArr = (o) => {
-  data.push(o);
+  const update = [...data, o];
+
+  fs.writeFile("./db.json", JSON.stringify(update), (err) => {
+    if (err) throw err;
+  });
+
+  // [...data, {}]
 };
 
 /*
@@ -106,6 +112,7 @@ app.post("/identify", (req, res) => {
   if (found) {
     res.send(found);
     console.log(found);
+    console.log("Found existing id");
     return;
   }
 
