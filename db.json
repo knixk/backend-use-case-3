@@ -1,5 +1,1 @@
-[
-  { "email": ["kirti@email.com", "9820042672"] },
-  { "email": ["kanishk@attributics.com", "kanishk@attributics.com"] },
-  { "email": ["komal@email.com", "03da682f-a8a8-40c9-964f-b664e90eced7"] }
-]
+[{"email":["kirti@email.com","9820042672"]},{"email":["kanishk@attributics.com","kanishk@attributics.com"]},{"email":["komal@email.com","03da682f-a8a8-40c9-964f-b664e90eced7"]},{"email":["test@email.com","902f2003-6159-4a2a-819d-5bf4c0eb6b03"]}]
