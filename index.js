@@ -21,95 +21,118 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// data.map((i) => {
-//   console.log(i.email[0]);
-// });
-
 app.get("/", cors(), (req, res) => {
   res.send("Hello World!");
 });
 
-// app.get("/users/track", (req, res) => {
-//   axios
-//     .post(instance_url, data, {
-//       headers: headers,
-//     })
-//     .then((res) => console.log(res));
-// });
+/*
+
+@@@POST /users/track
+
+*/
 
 app.post("/users/track", (req, res) => {
   const data = req.body;
-  // console.log(data);
-
-  // something with data
-
+  console.log(data);
+  // creating alias
   const alias = {
     user_aliases: [
       {
-        alias_name: "email",
-        alias_label: data.email,
+        alias_name: data.email,
+        alias_label: "email",
       },
     ],
   };
 
+  // sending data
   const userData = {
     attributes: [
       {
         email: data.email,
-        signed_up_email: true,
-      },
-    ],
-    events: [
-      {
-        name: "Signed up for email",
-        time: data.timestamp,
+        user_alias: {
+          alias_name: data.email,
+          alias_label: "email",
+        },
       },
     ],
   };
+  try {
+    axios.post(alias_url, alias, {
+      headers: headers,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
-
-  console.log(userData)
-
-  // axios
-  //   .post(alias_url, data, {
-  //     headers: headers,
-  //   })
-  //   .then((data) => console.log(data));
-
-  // axios
-  //   .post(track_url, data, {
-  //     headers: headers,
-  //   })
-  //   .then((data) => console.log(data));
-
-  res.send(201);
+  try {
+    axios.post(track_url, userData, {
+      headers: headers,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
+
+const searchInArr = (key) => {
+  let ans = false;
+  data.map((i) => {
+    const userEmail = i.email[0];
+    if (userEmail === key) {
+      ans = i.email[1];
+    }
+  });
+  return ans;
+};
+
+const addToArr = (o) => {
+  data.push(o);
+};
+
+/*
+
+@@@POST /users/track
+
+*/
 
 app.post("/identify", (req, res) => {
   const data = req.body;
 
-  const user_id = v4()
+  console.log(data);
+
+  const user_id = v4();
+
+  const found = searchInArr(data.email);
+
+  if (found) {
+    res.send(found);
+    console.log(found);
+    return;
+  }
 
   const identify = {
     aliases_to_identify: [
       {
         external_id: user_id,
         user_alias: {
-          alias_name: "email",
-          alias_label: "kirti@email.com",
+          alias_name: data.email,
+          alias_label: "email",
         },
       },
     ],
     merge_behavior: "merge",
   };
 
-  console.log(identify)
-  // axios
-  //   .post(instance_url, data, {
-  //     headers: headers,
-  //   })
-  //   .then((data) => console.log(data));
-  res.send(identify);
+  axios
+    .post(identify_url, identify, {
+      headers: headers,
+    })
+    .then((data) => console.log(data));
+
+  let obj = { email: [data.email, user_id] };
+
+  addToArr(obj);
+
+  res.send(user_id);
 });
 
 app.listen(port, () => {
