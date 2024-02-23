@@ -122,11 +122,15 @@ app.post("/identify", (req, res) => {
     merge_behavior: "merge",
   };
 
-  axios
-    .post(identify_url, identify, {
-      headers: headers,
-    })
-    .then((data) => console.log(data));
+  try {
+    axios
+      .post(identify_url, identify, {
+        headers: headers,
+      })
+      .then((data) => console.log(data));
+  } catch (error) {
+    console.log(error);
+  }
 
   let obj = { email: [data.email, user_id] };
 
