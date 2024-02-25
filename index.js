@@ -71,6 +71,8 @@ app.post("/users/track", (req, res) => {
   } catch (error) {
     console.log(error);
   }
+
+  res.send(201);
 });
 
 const searchInArr = (key) => {
